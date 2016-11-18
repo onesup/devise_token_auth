@@ -39,8 +39,13 @@ module DeviseTokenAuth
       @resource.save!
 
       yield @resource if block_given?
-
-      render_data_or_redirect('deliverCredentials', @auth_params.as_json, @resource.as_json)
+      if @resource.provider == 'session'
+        reset_session
+        session[:user_id] = @resource.id
+        redirect_to root_path
+      else
+        render_data_or_redirect('deliverCredentials', @auth_params.as_json, @resource.as_json)
+      end
     end
 
     def omniauth_failure
