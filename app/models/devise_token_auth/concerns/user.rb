@@ -7,7 +7,7 @@ module DeviseTokenAuth::Concerns::User
     @token_equality_cache ||= {}
 
     key = "#{token_hash}/#{token}"
-    result = @token_equality_cache[key] ||= (::BCrypt::Password.new(token_hash).to_s == token)
+    result = @token_equality_cache[key] ||= (::BCrypt::Password.new(token_hash) == token)
     if @token_equality_cache.size > 10000
       @token_equality_cache = {}
     end
