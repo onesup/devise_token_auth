@@ -39,7 +39,7 @@ module DeviseTokenAuth
       @resource.save!
 
       yield @resource if block_given?
-      if @resource.provider == 'session'
+      if %w(session naver).include? @resource.provider
         reset_session
         session[:user_id] = @resource.id
         redirect_to root_path
