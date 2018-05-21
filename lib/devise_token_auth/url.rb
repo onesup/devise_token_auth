@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module DeviseTokenAuth::Url
 
   def self.generate(url, params = {})
     uri = URI(url)
 
     res = "#{uri.scheme}://#{uri.host}"
-    res += ":#{uri.port}" if (uri.port and uri.port != 80 and uri.port != 443)
+    res += ":#{uri.port}" if (uri.port && uri.port != 80 && uri.port != 443)
     res += "#{uri.path}" if uri.path
     query = [uri.query, params.to_query].reject(&:blank?).join('&')
     res += "?#{query}"
@@ -14,7 +16,7 @@ module DeviseTokenAuth::Url
   end
 
   def self.whitelisted?(url)
-    !!DeviseTokenAuth.redirect_whitelist.find { |pattern| !!Wildcat.new(pattern).match(url) }
+    url.nil? || !!DeviseTokenAuth.redirect_whitelist.find { |pattern| !!Wildcat.new(pattern).match(url) }
   end
 
 

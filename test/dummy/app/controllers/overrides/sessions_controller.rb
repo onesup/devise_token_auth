@@ -1,19 +1,14 @@
+# frozen_string_literal: true
+
 module Overrides
   class SessionsController < DeviseTokenAuth::SessionsController
     OVERRIDE_PROOF = "(^^,)"
 
     def create
-      @resource = resource_class.find_by_email(resource_params[:email])
+      @resource = resource_class.find_by(email: resource_params[:email])
 
       if @resource and valid_params?(:email, resource_params[:email]) and @resource.valid_password?(resource_params[:password]) and @resource.confirmed?
-        # create client id
-        @client_id = SecureRandom.urlsafe_base64(nil, false)
-        @token     = SecureRandom.urlsafe_base64(nil, false)
-
-        @resource.tokens[@client_id] = {
-          token: BCrypt::Password.create(@token),
-          expiry: (Time.now + DeviseTokenAuth.token_lifespan).to_i
-        }
+        @client_id, @token = @resource.create_token
         @resource.save
 
         render json: {

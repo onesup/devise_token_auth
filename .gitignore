@@ -11,3 +11,5 @@ coverage
 .idea
 .irb_history
 .ruby-version
+.ruby-gemset
+tags
